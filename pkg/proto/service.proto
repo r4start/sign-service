@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package signservice;
+
+option go_package = "pkg/signservice";
+
+service SignService {
+    rpc Sign(Document) returns (DocSign);
+    rpc Verify(VerifyRequest) returns (VerifyResponse);
+
+    rpc SignBatch(DocumentBatch) returns (DocSignBatch);
+    rpc VerifyBatch(VerifyBatchRequest) returns (VerifyBatchResponse);
+
+    // Streaming API
+    rpc SignStream(stream Document) returns (stream DocSign);
+    rpc VerifyStream(stream VerifyRequest) returns (stream VerifyResponse);
+}
+
+message Document {
+    bytes data = 1;
+}
+
+message DocSign {
+    bytes sign = 1;
+}
+
+message VerifyRequest {
+    Document doc = 1;
+    DocSign sign = 2;
+}
+
+message VerifyResponse {
+    bool is_ok = 1;
+}
+
+message DocumentBatch {
+    repeated bytes doc = 1;
+}
+
+message DocSignBatch {
+    repeated bytes sign = 1;
+}
+
+message VerifyBatchRequest {
+    repeated VerifyRequest docs = 1;
+}
+
+message VerifyBatchResponse {
+    repeated bool status = 1;
+}
